@@ -1,0 +1,50 @@
+{
+  "test_file.py": {
+    "access_count": 3,
+    "operations": [
+      {
+        "timestamp": "2025-08-16T23:48:31.069277",
+        "operation": "write",
+        "success": true,
+        "content_hash": "07da107bb575cc4e02b0e1d6d99cc204",
+        "file_size": 22
+      },
+      {
+        "timestamp": "2025-08-16T23:48:31.070303",
+        "operation": "write",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-16T23:48:31.071837",
+        "operation": "read",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      }
+    ],
+    "last_accessed": "2025-08-16T23:48:31.071837",
+    "file_type": ".py",
+    "content_hashes": [
+      "07da107bb575cc4e02b0e1d6d99cc204"
+    ]
+  },
+  "test_persistent.py": {
+    "access_count": 1,
+    "operations": [
+      {
+        "timestamp": "2025-08-16T23:48:31.161829",
+        "operation": "read",
+        "success": true,
+        "content_hash": "abc123",
+        "file_size": 100
+      }
+    ],
+    "last_accessed": "2025-08-16T23:48:31.161829",
+    "file_type": ".py",
+    "content_hashes": [
+      "abc123"
+    ]
+  }
+}

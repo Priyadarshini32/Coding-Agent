@@ -1,0 +1,52 @@
+{
+  "read_file": {
+    "total_uses": 2,
+    "successful_uses": 2,
+    "failed_uses": 0,
+    "avg_execution_time": 0.1,
+    "common_errors": {},
+    "usage_contexts": [
+      {
+        "timestamp": "2025-08-16T23:48:31.071837",
+        "context": {
+          "filepath": "test_file.py"
+        }
+      }
+    ],
+    "last_used": "2025-08-16T23:48:31.163256"
+  },
+  "write_file": {
+    "total_uses": 1,
+    "successful_uses": 1,
+    "failed_uses": 0,
+    "avg_execution_time": 0.2,
+    "common_errors": {},
+    "usage_contexts": [
+      {
+        "timestamp": "2025-08-16T23:48:31.072865",
+        "context": {
+          "filepath": "test_file.py"
+        }
+      }
+    ],
+    "last_used": "2025-08-16T23:48:31.072865"
+  },
+  "run_command": {
+    "total_uses": 1,
+    "successful_uses": 0,
+    "failed_uses": 1,
+    "avg_execution_time": 1.0,
+    "common_errors": {
+      "Command not found": 1
+    },
+    "usage_contexts": [
+      {
+        "timestamp": "2025-08-16T23:48:31.073911",
+        "context": {
+          "command": "invalid_cmd"
+        }
+      }
+    ],
+    "last_used": "2025-08-16T23:48:31.073911"
+  }
+}
