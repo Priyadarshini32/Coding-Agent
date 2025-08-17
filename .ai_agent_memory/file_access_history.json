@@ -428,7 +428,7 @@
     "content_hashes": []
   },
   "sample.py": {
-    "access_count": 13,
+    "access_count": 16,
     "operations": [
       {
         "timestamp": "2025-08-17T16:10:36.141091",
@@ -520,13 +520,35 @@
         "success": true,
         "content_hash": null,
         "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T17:48:04.125041",
+        "operation": "write_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T17:48:28.933759",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T17:48:28.935800",
+        "operation": "read",
+        "success": true,
+        "content_hash": "4666bc8b137d26219aabcb0fa31c15df",
+        "file_size": 329
       }
     ],
-    "last_accessed": "2025-08-17T17:15:44.617709",
+    "last_accessed": "2025-08-17T17:48:28.935800",
     "file_type": ".py",
     "content_hashes": [
       "1e6f93b02bd6ca9c1a2468ce363fcd58",
-      "d9a6693fe47f696293ad4e8202d64397"
+      "d9a6693fe47f696293ad4e8202d64397",
+      "4666bc8b137d26219aabcb0fa31c15df"
     ]
   },
   "README.md": {
@@ -610,5 +632,74 @@
       "6914abc68b1ebbcefd0323740672d2be",
       "6914abc68b1ebbcefd0323740672d2be"
     ]
+  },
+  "sample.txt": {
+    "access_count": 1,
+    "operations": [
+      {
+        "timestamp": "2025-08-17T17:36:18.969533",
+        "operation": "write_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      }
+    ],
+    "last_accessed": "2025-08-17T17:36:18.969533",
+    "file_type": ".txt",
+    "content_hashes": []
+  },
+  "requirements.txt": {
+    "access_count": 4,
+    "operations": [
+      {
+        "timestamp": "2025-08-17T17:48:30.212130",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T17:48:30.216126",
+        "operation": "read",
+        "success": true,
+        "content_hash": "5373cdc6395ebea83663b1b63a885422",
+        "file_size": 39
+      },
+      {
+        "timestamp": "2025-08-17T17:52:06.016962",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T17:52:06.019441",
+        "operation": "read",
+        "success": true,
+        "content_hash": "5373cdc6395ebea83663b1b63a885422",
+        "file_size": 39
+      }
+    ],
+    "last_accessed": "2025-08-17T17:52:06.019441",
+    "file_type": ".txt",
+    "content_hashes": [
+      "5373cdc6395ebea83663b1b63a885422",
+      "5373cdc6395ebea83663b1b63a885422"
+    ]
+  },
+  "test.py": {
+    "access_count": 1,
+    "operations": [
+      {
+        "timestamp": "2025-08-17T17:49:45.745518",
+        "operation": "write_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      }
+    ],
+    "last_accessed": "2025-08-17T17:49:45.745518",
+    "file_type": ".py",
+    "content_hashes": []
   }
 }

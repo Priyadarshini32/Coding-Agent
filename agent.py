@@ -173,16 +173,15 @@ class Agent:
 
     def learn(self, observation):
         """Updates memory and context for future decisions."""
-        if isinstance(observation, dict):
-            if "status" in observation:
-                tool_name = observation.get("tool_name", "unknown")
-                success = observation.get("status") == "success"
-                execution_time = observation.get("execution_time")
-                error_message = observation.get("message") if not success else None
-                
-                self.memory_manager.record_tool_usage(
-                    tool_name, success, execution_time, error_message
-                )
+        if isinstance(observation, dict) and observation.get("type") == "tool_execution":
+            tool_name = observation.get("tool_name", "unknown")
+            success = observation.get("status") == "success"
+            execution_time = observation.get("execution_time")
+            error_message = observation.get("message") if not success else None
+            
+            self.memory_manager.record_tool_usage(
+                tool_name, success, execution_time, error_message
+            )
         
         # Trigger learning from session periodically
         if len(self.conversation_history) % 10 == 0:
@@ -210,8 +209,9 @@ class Agent:
             observation = self.act(action)
             
             # Learn from the observation
-            self.learn(observation)
-            
+            if observation and observation.get("type") == "tool_execution":
+                self.learn(observation)
+
             # Check if task is complete
             if observation and observation.get("type") == "text_response":
                 # Agent provided final response - task is complete
