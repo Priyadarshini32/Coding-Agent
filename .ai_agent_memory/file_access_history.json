@@ -46,5 +46,242 @@
     "content_hashes": [
       "abc123"
     ]
+  },
+  "test_mem.txt": {
+    "access_count": 7,
+    "operations": [
+      {
+        "timestamp": "2025-08-17T00:23:02.780799",
+        "operation": "write_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T00:23:16.877490",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T00:23:16.878495",
+        "operation": "read",
+        "success": true,
+        "content_hash": "5eb63bbbe01eeed093cb22bb8f5acdc3",
+        "file_size": 11
+      },
+      {
+        "timestamp": "2025-08-17T00:24:13.041519",
+        "operation": "write_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T13:39:40.734384",
+        "operation": "write_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T13:40:01.954011",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T13:40:01.957085",
+        "operation": "read",
+        "success": true,
+        "content_hash": "5eb63bbbe01eeed093cb22bb8f5acdc3",
+        "file_size": 11
+      }
+    ],
+    "last_accessed": "2025-08-17T13:40:01.957085",
+    "file_type": ".txt",
+    "content_hashes": [
+      "5eb63bbbe01eeed093cb22bb8f5acdc3",
+      "5eb63bbbe01eeed093cb22bb8f5acdc3"
+    ]
+  },
+  "main.py": {
+    "access_count": 10,
+    "operations": [
+      {
+        "timestamp": "2025-08-17T13:46:11.722745",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T13:46:11.724736",
+        "operation": "read",
+        "success": true,
+        "content_hash": "52faa92e29d42c2d6b684ed762258020",
+        "file_size": 2002
+      },
+      {
+        "timestamp": "2025-08-17T13:54:17.103688",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T13:54:17.105670",
+        "operation": "read",
+        "success": true,
+        "content_hash": "52faa92e29d42c2d6b684ed762258020",
+        "file_size": 2002
+      },
+      {
+        "timestamp": "2025-08-17T14:04:58.433759",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T14:04:58.437983",
+        "operation": "read",
+        "success": true,
+        "content_hash": "52faa92e29d42c2d6b684ed762258020",
+        "file_size": 2002
+      },
+      {
+        "timestamp": "2025-08-17T14:07:15.955260",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T14:07:15.959250",
+        "operation": "read",
+        "success": true,
+        "content_hash": "52faa92e29d42c2d6b684ed762258020",
+        "file_size": 2002
+      },
+      {
+        "timestamp": "2025-08-17T14:08:27.159120",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T14:08:27.165903",
+        "operation": "read",
+        "success": true,
+        "content_hash": "52faa92e29d42c2d6b684ed762258020",
+        "file_size": 2002
+      }
+    ],
+    "last_accessed": "2025-08-17T14:08:27.165903",
+    "file_type": ".py",
+    "content_hashes": [
+      "52faa92e29d42c2d6b684ed762258020",
+      "52faa92e29d42c2d6b684ed762258020",
+      "52faa92e29d42c2d6b684ed762258020",
+      "52faa92e29d42c2d6b684ed762258020",
+      "52faa92e29d42c2d6b684ed762258020"
+    ]
+  },
+  "llm_integration.py": {
+    "access_count": 6,
+    "operations": [
+      {
+        "timestamp": "2025-08-17T13:53:19.287661",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T13:53:19.288669",
+        "operation": "read",
+        "success": true,
+        "content_hash": "ebc59feb14b87c92582923e4263f401b",
+        "file_size": 5827
+      },
+      {
+        "timestamp": "2025-08-17T13:56:30.016055",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T13:56:30.019755",
+        "operation": "read",
+        "success": true,
+        "content_hash": "ebc59feb14b87c92582923e4263f401b",
+        "file_size": 5827
+      },
+      {
+        "timestamp": "2025-08-17T14:16:51.033935",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T14:16:51.038190",
+        "operation": "read",
+        "success": true,
+        "content_hash": "f9b7fcf7077fb688b48168e52e9ecbbb",
+        "file_size": 7148
+      }
+    ],
+    "last_accessed": "2025-08-17T14:16:51.038190",
+    "file_type": ".py",
+    "content_hashes": [
+      "ebc59feb14b87c92582923e4263f401b",
+      "ebc59feb14b87c92582923e4263f401b",
+      "f9b7fcf7077fb688b48168e52e9ecbbb"
+    ]
+  },
+  "agent.py": {
+    "access_count": 4,
+    "operations": [
+      {
+        "timestamp": "2025-08-17T14:02:40.197970",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T14:02:40.200383",
+        "operation": "read",
+        "success": true,
+        "content_hash": "2fd4d8c3c4fc72317dbef08ce874e72f",
+        "file_size": 12935
+      },
+      {
+        "timestamp": "2025-08-17T14:16:52.568671",
+        "operation": "read_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
+      },
+      {
+        "timestamp": "2025-08-17T14:16:52.572661",
+        "operation": "read",
+        "success": true,
+        "content_hash": "8da9c6f8e22978a986760178cdf5c762",
+        "file_size": 13115
+      }
+    ],
+    "last_accessed": "2025-08-17T14:16:52.572661",
+    "file_type": ".py",
+    "content_hashes": [
+      "2fd4d8c3c4fc72317dbef08ce874e72f",
+      "8da9c6f8e22978a986760178cdf5c762"
+    ]
   }
 }

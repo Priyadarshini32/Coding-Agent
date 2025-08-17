@@ -1,9 +1,11 @@
 import os
 import json
 import subprocess
-import shutil # Import shutil for file operations
-import datetime # Import datetime for timestamp
-from action_history import ActionHistory # Change to direct import
+import shutil
+import datetime
+from action_history import ActionHistory
+from memory_manager import MemoryManager
+
 
 def _create_backup(filepath):
     """Creates a timestamped backup of the given file."""
@@ -32,7 +34,7 @@ def write_file(filepath, content):
     """Writes content to a specified file. Creates the file if it doesn't exist, overwrites if it does."""
     backup_result = _create_backup(filepath)
     if backup_result["status"] == "error":
-        return backup_result # Return backup error if it occurs
+        return backup_result
 
     try:
         with open(filepath, 'w') as f:
@@ -45,7 +47,7 @@ def delete_file(filepath):
     """Deletes a specified file physically from the filesystem."""
     backup_result = _create_backup(filepath)
     if backup_result["status"] == "error":
-        return backup_result # Return backup error if it occurs
+        return backup_result
 
     try:
         os.remove(filepath)
@@ -59,11 +61,11 @@ def clear_file_content(filepath):
     """Removes all content from a specified file, leaving an empty file."""
     backup_result = _create_backup(filepath)
     if backup_result["status"] == "error":
-        return backup_result # Return backup error if it occurs
+        return backup_result
 
     try:
         with open(filepath, 'w') as f:
-            f.truncate(0) # Truncate to 0 bytes
+            f.truncate(0)
         return {"status": "success", "message": f"Content of {filepath} cleared successfully."}
     except FileNotFoundError:
         return {"status": "error", "message": f"File not found: {filepath}"}
@@ -90,11 +92,10 @@ def run_git_command(command):
 def run_command(command, env=None):
     """Runs any shell command and returns its standard output and standard error."""
     try:
-        result = subprocess.run(command, capture_output=True, text=True, shell=True, env=env, check=False) # Changed check=True to check=False
+        result = subprocess.run(command, capture_output=True, text=True, shell=True, env=env, check=False)
         output = result.stdout.strip()
         error = result.stderr.strip()
         
-        # Include exit code in success message for better debugging
         if output and error:
             return {"status": "success", "content": f"Exit Code: {result.returncode}\nSTDOUT:\n{output}\nSTDERR:\n{error}"}
         elif output:
@@ -113,7 +114,6 @@ def list_directory_contents():
     """Lists the contents (files and directories) of the current working directory."""
     try:
         items = os.listdir('.')
-        # Filter out virtual environment directories like 'venv' if present
         filtered_items = [item for item in items if not (item.startswith('venv') or item.startswith('.'))]
         return {"status": "success", "content": "\n".join(filtered_items)}
     except Exception as e:
@@ -129,7 +129,7 @@ def search_files(query, filepath=None, directory_path=None):
                 if query in line:
                     matching_lines.append(f"{filepath}:{line_num + 1}: {line}")
         else:
-            return read_result # Return file read error
+            return read_result
     elif directory_path:
         for root, _, files in os.walk(directory_path):
             for file in files:
@@ -139,7 +139,7 @@ def search_files(query, filepath=None, directory_path=None):
                     for line_num, line in enumerate(read_result["content"].splitlines()):
                         if query in line:
                             matching_lines.append(f"{full_path}:{line_num + 1}: {line}")
-    else: # Search current directory
+    else:
         for item in os.listdir('.'):
             if os.path.isfile(item):
                 read_result = read_file(item)
@@ -161,17 +161,13 @@ def run_linter(filepath=None, directory_path=None):
     elif directory_path:
         command_parts.append(directory_path)
     else:
-        command_parts.append(".") # Lint current directory
+        command_parts.append(".")
     
-    # Convert command parts to a string for run_command
     command_str = " ".join(command_parts)
     
-    # Set PYTHONPATH to include the current directory for pylint to find local modules
-    # This is crucial for pylint's static analysis
     env = os.environ.copy()
     env['PYTHONPATH'] = os.getcwd()
 
-    # Pass the environment to run_command
     return run_command(command_str, env=env)
 
 def run_tests(directory_path=None):
@@ -180,7 +176,6 @@ def run_tests(directory_path=None):
     if directory_path:
         command += f" {directory_path}"
     
-    # Pass env to run_command for pytest too, just in case
     env = os.environ.copy()
     env['PYTHONPATH'] = os.getcwd()
 
@@ -190,7 +185,7 @@ def apply_code_change(filepath, old_code, new_code):
     """Applies a precise code change to a file by replacing old_code with new_code."""
     backup_result = _create_backup(filepath)
     if backup_result["status"] == "error":
-        return backup_result # Return backup error if it occurs
+        return backup_result
 
     try:
         with open(filepath, 'r') as f:
@@ -199,7 +194,7 @@ def apply_code_change(filepath, old_code, new_code):
         if old_code not in content:
             return {"status": "error", "message": f"Old code not found in {filepath}. No change applied."}
 
-        new_content = content.replace(old_code, new_code, 1) # Replace only the first occurrence
+        new_content = content.replace(old_code, new_code, 1)
         
         with open(filepath, 'w') as f:
             f.write(new_content)
@@ -224,7 +219,7 @@ def undo_last_action(action_history: ActionHistory):
         if action_type == 'write_file':
             filepath = details['filepath']
             original_content = details['original_content']
-            if original_content is None: # File did not exist before write
+            if original_content is None:
                 os.remove(filepath)
                 return {"status": "success", "message": f"Removed newly created file: {filepath}"}
             else:
@@ -248,12 +243,10 @@ def undo_last_action(action_history: ActionHistory):
             return {"status": "success", "message": f"Restored content of {filepath}."}
         elif action_type == 'apply_code_change':
             filepath = details['filepath']
-            current_content = read_file(filepath)['content'] # Get current content to apply inverse change
-            old_code_for_undo = details['new_code'] # In undo, new becomes old
-            new_code_for_undo = details['old_code'] # And old becomes new
+            current_content = read_file(filepath)['content']
+            old_code_for_undo = details['new_code']
+            new_code_for_undo = details['old_code']
 
-            # This is a bit tricky: apply_code_change replaces only the first occurrence.
-            # For undo, we assume the exact new_code is still there and replace it with old_code.
             if old_code_for_undo not in current_content:
                 return {"status": "error", "message": f"Could not undo code change in {filepath}: Current content does not match expected state for undo."}
 
@@ -267,28 +260,31 @@ def undo_last_action(action_history: ActionHistory):
         return {"status": "error", "message": f"Error undoing action {action_type} on {details.get('filepath', '')}: {str(e)}"}
 
 
-def get_memory_status():
+def get_memory_status(memory_manager):
     """Get a summary of the agent's memory status."""
     try:
-        # This function will be called by the agent to get memory statistics
-        # The actual implementation will be handled by the memory manager
-        return {"status": "success", "message": "Memory status function called. Implementation handled by memory manager."}
+        memory_summary = memory_manager.get_memory_summary()
+        return {"status": "success", "content": memory_summary}
     except Exception as e:
         return {"status": "error", "message": f"Error getting memory status: {str(e)}"}
 
 
-def search_memory_patterns(pattern_type=None, query=None):
+def search_memory_patterns(memory_manager, pattern_type=None, query=None):
     """Search for patterns in the agent's memory."""
     try:
-        # This function will be called by the agent to search memory patterns
-        # The actual implementation will be handled by the memory manager
-        return {"status": "success", "message": "Memory pattern search function called. Implementation handled by memory manager."}
+        if pattern_type == "tool_effectiveness":
+            patterns = memory_manager.get_tool_effectiveness()
+            return {"status": "success", "content": patterns}
+        else:
+            context = {"query": query} if query else {}
+            patterns = memory_manager.get_relevant_patterns(context, pattern_type)
+            return {"status": "success", "content": patterns}
     except Exception as e:
         return {"status": "error", "message": f"Error searching memory patterns: {str(e)}"}
 
 
 class ToolExecutionSystem:
-    def __init__(self, action_history: ActionHistory, memory_manager=None):
+    def __init__(self, action_history: ActionHistory, memory_manager: MemoryManager):
         self.action_history = action_history
         self.memory_manager = memory_manager
         self.available_tools = {
@@ -303,9 +299,9 @@ class ToolExecutionSystem:
             "run_linter": run_linter,
             "run_tests": run_tests,
             "apply_code_change": self._wrapped_apply_code_change,
-            "undo_last_action": undo_last_action, # Add undo_last_action tool
-            "get_memory_status": get_memory_status, # Add memory status tool
-            "search_memory_patterns": search_memory_patterns, # Add memory pattern search tool
+            "undo_last_action": undo_last_action,
+            "get_memory_status": get_memory_status,
+            "search_memory_patterns": search_memory_patterns,
         }
         self.tool_schemas = [
             {
@@ -589,8 +585,6 @@ class ToolExecutionSystem:
         return result
 
     def _wrapped_apply_code_change(self, filepath, old_code, new_code):
-        # For apply_code_change, we need to record both old_code and new_code for undo.
-        # The backup mechanism already creates a full file backup, so we mostly need the old/new strings here.
         result = apply_code_change(filepath, old_code, new_code)
         if result['status'] == 'success':
             self.action_history.record_action('apply_code_change', {'filepath': filepath, 'old_code': old_code, 'new_code': new_code})
@@ -602,19 +596,16 @@ class ToolExecutionSystem:
 
         if tool_name in self.available_tools:
             tool_function = self.available_tools[tool_name]
-            if tool_name == "undo_last_action": # undo_last_action needs the action_history instance
+            if tool_name == "undo_last_action":
                 return tool_function(self.action_history)
             elif tool_name == "get_memory_status" and self.memory_manager:
-                # Get memory status from memory manager
                 memory_summary = self.memory_manager.get_memory_summary()
                 return {"status": "success", "content": json.dumps(memory_summary, indent=2)}
             elif tool_name == "search_memory_patterns" and self.memory_manager:
-                # Search memory patterns using memory manager
                 pattern_type = tool_args.get("pattern_type")
                 query = tool_args.get("query")
-                context = {"query": query} if query else {}
-                patterns = self.memory_manager.get_relevant_patterns(context, pattern_type)
-                return {"status": "success", "content": json.dumps(patterns, indent=2)}
+                result = search_memory_patterns(self.memory_manager, pattern_type, query)
+                return {"status": result['status'], "content": json.dumps(result.get('content'), indent=2), "message": result.get('message')}
             else:
                 return tool_function(**tool_args)
         else:

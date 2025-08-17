@@ -1,9 +1,9 @@
 {
   "read_file": {
-    "total_uses": 2,
-    "successful_uses": 2,
+    "total_uses": 16,
+    "successful_uses": 16,
     "failed_uses": 0,
-    "avg_execution_time": 0.1,
+    "avg_execution_time": 0.02430759900576109,
     "common_errors": {},
     "usage_contexts": [
       {
@@ -11,15 +11,111 @@
         "context": {
           "filepath": "test_file.py"
         }
+      },
+      {
+        "timestamp": "2025-08-17T00:23:16.876482",
+        "context": {
+          "arguments": {
+            "filepath": "test_mem.txt"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-08-17T13:40:01.951595",
+        "context": {
+          "arguments": {
+            "filepath": "test_mem.txt"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-08-17T13:46:11.719753",
+        "context": {
+          "arguments": {
+            "filepath": "main.py"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-08-17T13:53:19.286452",
+        "context": {
+          "arguments": {
+            "filepath": "llm_integration.py"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-08-17T13:54:17.099119",
+        "context": {
+          "arguments": {
+            "filepath": "main.py"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-08-17T13:56:30.013657",
+        "context": {
+          "arguments": {
+            "filepath": "llm_integration.py"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-08-17T14:02:40.196551",
+        "context": {
+          "arguments": {
+            "filepath": "agent.py"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-08-17T14:04:58.430072",
+        "context": {
+          "arguments": {
+            "filepath": "main.py"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-08-17T14:07:15.951263",
+        "context": {
+          "arguments": {
+            "filepath": "main.py"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-08-17T14:08:27.155307",
+        "context": {
+          "arguments": {
+            "filepath": "main.py"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-08-17T14:16:51.030752",
+        "context": {
+          "arguments": {
+            "filepath": "llm_integration.py"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-08-17T14:16:52.565680",
+        "context": {
+          "arguments": {
+            "filepath": "agent.py"
+          }
+        }
       }
     ],
-    "last_used": "2025-08-16T23:48:31.163256"
+    "last_used": "2025-08-17T14:16:52.642711"
   },
   "write_file": {
-    "total_uses": 1,
-    "successful_uses": 1,
+    "total_uses": 4,
+    "successful_uses": 4,
     "failed_uses": 0,
-    "avg_execution_time": 0.2,
+    "avg_execution_time": 0.05168997049331665,
     "common_errors": {},
     "usage_contexts": [
       {
@@ -27,15 +123,42 @@
         "context": {
           "filepath": "test_file.py"
         }
+      },
+      {
+        "timestamp": "2025-08-17T00:23:02.778440",
+        "context": {
+          "arguments": {
+            "filepath": "test_mem.txt",
+            "content": "hello world"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-08-17T00:24:13.039381",
+        "context": {
+          "arguments": {
+            "filepath": "test_mem.txt",
+            "content": "hello world"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-08-17T13:39:40.733388",
+        "context": {
+          "arguments": {
+            "filepath": "test_mem.txt",
+            "content": "hello world"
+          }
+        }
       }
     ],
-    "last_used": "2025-08-16T23:48:31.072865"
+    "last_used": "2025-08-17T13:39:40.733388"
   },
   "run_command": {
-    "total_uses": 1,
-    "successful_uses": 0,
+    "total_uses": 2,
+    "successful_uses": 1,
     "failed_uses": 1,
-    "avg_execution_time": 1.0,
+    "avg_execution_time": 0.5305589437484741,
     "common_errors": {
       "Command not found": 1
     },
@@ -45,8 +168,76 @@
         "context": {
           "command": "invalid_cmd"
         }
+      },
+      {
+        "timestamp": "2025-08-17T13:42:19.025204",
+        "context": {
+          "arguments": {
+            "command": "invalid_cmd"
+          }
+        }
       }
     ],
-    "last_used": "2025-08-16T23:48:31.073911"
+    "last_used": "2025-08-17T13:42:19.025204"
+  },
+  "get_memory_status": {
+    "total_uses": 1,
+    "successful_uses": 1,
+    "failed_uses": 0,
+    "avg_execution_time": 0.0014412403106689453,
+    "common_errors": {},
+    "usage_contexts": [
+      {
+        "timestamp": "2025-08-17T13:40:15.469260",
+        "context": {
+          "arguments": {}
+        }
+      }
+    ],
+    "last_used": "2025-08-17T13:40:15.469260"
+  },
+  "list_directory_contents": {
+    "total_uses": 1,
+    "successful_uses": 1,
+    "failed_uses": 0,
+    "avg_execution_time": 0,
+    "common_errors": {},
+    "usage_contexts": [
+      {
+        "timestamp": "2025-08-17T13:41:38.010996",
+        "context": {
+          "arguments": {}
+        }
+      }
+    ],
+    "last_used": "2025-08-17T13:41:38.010996"
+  },
+  "search_memory_patterns": {
+    "total_uses": 1,
+    "successful_uses": 1,
+    "failed_uses": 0,
+    "avg_execution_time": 0,
+    "common_errors": {},
+    "usage_contexts": [
+      {
+        "timestamp": "2025-08-17T13:42:43.464776",
+        "context": {
+          "arguments": {
+            "pattern_type": "tool_effectiveness",
+            "query": "tool usage"
+          }
+        }
+      }
+    ],
+    "last_used": "2025-08-17T13:42:43.464776"
+  },
+  "unknown": {
+    "total_uses": 1,
+    "successful_uses": 1,
+    "failed_uses": 0,
+    "avg_execution_time": 0,
+    "common_errors": {},
+    "usage_contexts": [],
+    "last_used": "2025-08-17T14:16:55.224420"
   }
 }

@@ -10,7 +10,6 @@ class LLMIntegration:
         tools_str = json.dumps(available_tools_schema)
 
         # Extract OS info from the last message in conversation_history if available
-        # Assuming the perception object with os_info is added as part of the conversation history
         os_info = "Unknown"
         if conversation_history and isinstance(conversation_history[-1], dict) and "os_info" in conversation_history[-1]:
             os_info = conversation_history[-1]["os_info"]
@@ -30,25 +29,51 @@ class LLMIntegration:
         """
 
         prompt = f"""
-        You are a coding agent. Your goal is to understand the user's request, analyze the current state, and decide on the next action to take using the available tools. After performing an action, provide a summary or feedback to the user. If the user asks a definitional or informational question (e.g., "What is X?"), provide a comprehensive explanation, including relevant examples formatted as code blocks where appropriate.
+        You are an intelligent coding agent following a Perceive -> Reason -> Act -> Learn iterative loop. Your goal is to understand the user's request and determine the *single next action* to take.
 
-        For any Git-related operations (e.g., status, diff, commit, branch, pull, push), use the `run_git_command` tool. The `command` argument for `run_git_command` should be the full Git subcommand and its arguments as a single string (e.g., "status", "diff --staged", "commit -m 'Initial commit'", "pull origin main"). These commands are executed directly by Git through the shell.
+        IMPORTANT: You must respond with EXACTLY ONE action at a time. After each action is executed, you will receive feedback and determine the next step.
 
-        For listing directory contents (e.g., "what is in my current directory", "list files"), use the `list_directory_contents` tool. Always prefer `list_directory_contents` over `run_command` with `ls` or `dir` for listing files or directories, as it is cross-platform and more reliable.
+        **ITERATIVE APPROACH RULES:**
+        1. Break complex tasks into individual steps
+        2. Execute ONE tool call at a time
+        3. Wait for tool execution result before planning next step
+        4. Adapt based on previous results and feedback
+        5. Provide clear reasoning for each step
 
-        For searching content within files (e.g., "find 'hello' in main.py", "search for 'TODO' in the project"), use the `search_files` tool. Specify the `query` argument (the text to search for). You can optionally provide `filepath` to search in a specific file or `directory_path` to search in a specific folder. If neither is provided, the current directory will be searched.
+        **REASONING PROCESS:**
+        When you receive feedback from a tool execution:
+        - Analyze the output carefully
+        - Determine if the task is complete or if more steps are needed
+        - If more steps needed, identify the NEXT logical step
+        - If complete, provide a comprehensive summary
 
-        For linting Python code (e.g., "lint this file", "check code quality"), use the `run_linter` tool. You can provide an optional `filepath` or `directory_path`.
+        **RESPONSE FORMATS:**
+        For tool calls, respond with JSON:
+        {{"tool_calls": [{{"function": {{"name": "tool_name", "arguments": {{"key": "value"}}}}}}]}}
 
-        For running Python tests (e.g., "run tests", "execute all tests"), use the `run_tests` tool. You can provide an optional `directory_path`.
+        For text responses/summaries, respond with JSON:
+        {{"text": "Your response here"}}
 
-        To fix code, you can use the `apply_code_change` tool. This tool requires `filepath`, `old_code` (the exact string to be replaced), and `new_code` (the replacement string). Use this tool to fix bugs or refactor code based on analysis or test results.
+        For multi-step requests like "read file1.py and file2.py":
+        - Step 1: Read file1.py (wait for result)
+        - Step 2: Read file2.py (after receiving file1 content)
+        - Step 3: Provide analysis/summary of both files
 
-        To undo the last destructive action (e.g., file write, delete, clear, or code change), use the `undo_last_action` tool. This tool reverses the most recent change recorded in the agent's action history. Use it cautiously, as it can only undo the very last action.
+        For Git-related operations, use the `run_git_command` tool with the full Git subcommand (e.g., "status", "diff --staged", "commit -m 'message'").
 
-        For executing any other general shell commands (e.g., `pip install`, `npm test`, `python script.py`), use the `run_command` tool. The `command` argument should be the full shell command string (e.g., "echo Hello", "python my_script.py").
+        For directory listings, use `list_directory_contents` instead of `run_command` with `ls`.
 
-        **Important Safety Note:** For destructive operations like `write_file`, `delete_file`, `clear_file_content`, and `apply_code_change`, the agent will always ask for user confirmation with a preview of the changes. Be prepared to approve or deny these actions.
+        For file searches, use `search_files` with query, optional filepath, or directory_path.
+
+        For Python linting, use `run_linter` with optional filepath or directory_path.
+
+        For running tests, use `run_tests` with optional directory_path.
+
+        For code fixes, use `apply_code_change` with filepath, old_code, and new_code.
+
+        For undoing actions, use `undo_last_action`.
+
+        **SAFETY:** Destructive operations (write_file, delete_file, clear_file_content, apply_code_change) require user confirmation.
 
         Current Operating System: {os_info}{memory_context_text}
 
@@ -57,11 +82,72 @@ class LLMIntegration:
 
         Available tools: {tools_str}
 
-        Based on the conversation and available tools, what is the next action? If you are reading a file, provide a summary or feedback about its content after the read. Respond with a JSON object representing the tool call, like this:
-        {{"tool_calls": [{{\"function\": {{\"name\": \"tool_name\", \"arguments\": {{}}\}}}}]}}
-        If no tool is suitable or if you are providing feedback, provide a textual response. When providing a textual response or summary, format it clearly, using Markdown for code examples and structured information.
+        **TASK:** Based on the conversation history, what is the SINGLE next action to take? If this is a new user request, start with the first logical step. If you just received tool output, analyze it and determine the next step or provide final summary.
 
-        **Error Handling:** If a tool execution results in an error (i.e., the `tool_output` has `"status": "error"` and a `"message"` field), carefully analyze the error message. Explain the error to the user in clear, concise terms. If possible, suggest concrete steps or a specific tool call to resolve the issue. For example, if a file is not found, suggest using `list_directory_contents` to verify the path or `search_files` to locate it. Always prioritize providing actionable advice for error scenarios.
+        **ERROR HANDLING:** If a tool execution resulted in an error, analyze the error message and suggest a concrete next step to resolve it. Use tools like `list_directory_contents` to verify paths or `search_files` to locate files.
+
+        Respond with either a single tool call JSON or a text response JSON as specified above.
+        """
+
+        response = self.model.generate_content(prompt)
+        return response.text
+
+    def analyze_and_respond(self, tool_output, conversation_history, available_tools_schema, memory_context=None):
+        """
+        Analyze tool output and determine next action or provide final response.
+        This supports the iterative approach by processing each step's result.
+        """
+        tools_str = json.dumps(available_tools_schema)
+        
+        # Get the last user request from conversation history
+        last_user_message = ""
+        for msg in reversed(conversation_history):
+            if msg['role'] == 'user':
+                last_user_message = msg['content']
+                break
+        
+        # Add memory context to the prompt
+        memory_context_text = ""
+        if memory_context:
+            memory_context_text = f"""
+        Memory Context:
+        - Frequently accessed files: {memory_context.get('frequently_accessed_files', [])}
+        - Active files in session: {memory_context.get('active_files', [])}
+        - Recent operations: {len(memory_context.get('recent_operations', []))} operations
+        """
+
+        # Use string concatenation instead of f-string for complex formatting
+        prompt = """
+        You are continuing your iterative approach to completing the user's request.
+
+        **ORIGINAL USER REQUEST:** """ + last_user_message + """
+
+        **LATEST TOOL OUTPUT:** """ + json.dumps(tool_output) + """
+
+        **CONVERSATION HISTORY:**
+        """ + "\n".join([f"{msg['role']}: {msg['content']}" for msg in conversation_history[-5:]]) + """
+
+        """ + memory_context_text + """
+
+        **ANALYSIS REQUIRED:**
+        1. Was the tool execution successful?
+        2. Does this complete the user's request, or are more steps needed?
+        3. If more steps needed, what is the NEXT logical action?
+        4. If complete, provide a comprehensive summary/analysis.
+
+        **RESPONSE FORMATS:**
+        - For next tool action: {"tool_calls": [{"function": {"name": "tool_name", "arguments": {"key": "value"}}}]}
+        - For final response: {"text": "Your comprehensive response here"}
+
+        **SPECIAL CASES:**
+        - If reading multiple files: Summarize each file's content and purpose
+        - If tests failed: Analyze failure and suggest specific fixes
+        - If errors occurred: Explain the error and suggest resolution steps
+        - If task complete: Provide clear summary of what was accomplished
+
+        Available tools: """ + tools_str + """
+
+        Determine the next action or provide final response:
         """
 
         response = self.model.generate_content(prompt)
