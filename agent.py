@@ -85,15 +85,15 @@ class Agent:
                 tool_calls = response_json["tool_calls"]
             elif "text" in response_json:
                 agent_response_content = response_json['text']
-                self.terminal_interface.display_message(f"Agent Response: {agent_response_content}")
+                self.terminal_interface.display_message(agent_response_content)
                 self.conversation_history.append({"role": "model", "content": agent_response_content})
                 return {"status": "success", "message": agent_response_content, "type": "text_response"}
 
         except json.JSONDecodeError:
             # Treat as text response
-            self.terminal_interface.display_message(f"Agent Response: {action}")
-            self.conversation_history.append({"role": "model", "content": action})
-            return {"status": "success", "message": action, "type": "text_response"}
+            self.terminal_interface.display_message(processed_action)
+            self.conversation_history.append({"role": "model", "content": processed_action})
+            return {"status": "success", "message": processed_action, "type": "text_response"}
 
         if tool_calls:
             # Execute only the first tool call (iterative approach)
@@ -263,6 +263,14 @@ class Agent:
         
         self.current_task_state = "idle"
         return {"status": "success", "message": "Task completed"}
+    
+    def get_conversation_history(self):
+        """Returns the full conversation history."""
+        return self.conversation_history
+    
+    def get_tool_schemas(self):
+        """Returns the list of available tool schemas."""
+        return self.tool_execution_system.tool_schemas
 
     def get_status(self):
         """Get current agent status and statistics."""

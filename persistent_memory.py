@@ -119,7 +119,9 @@ class PersistentMemory:
         else:
             tool_stats["failed_uses"] += 1
             if error_message:
-                tool_stats["common_errors"][error_message] += 1
+                # Use a cleaner version of the error message as a key
+                clean_error_message = error_message.split(":")[0].strip()
+                tool_stats["common_errors"][clean_error_message] += 1
         
         if execution_time:
             # Update average execution time
