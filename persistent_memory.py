@@ -121,6 +121,9 @@ class PersistentMemory:
             if error_message:
                 # Use a cleaner version of the error message as a key
                 clean_error_message = error_message.split(":")[0].strip()
+                # Ensure common_errors is always a Counter (it may be a plain dict after JSON load)
+                if not isinstance(tool_stats.get("common_errors"), Counter):
+                    tool_stats["common_errors"] = Counter(tool_stats.get("common_errors", {}))
                 tool_stats["common_errors"][clean_error_message] += 1
         
         if execution_time:

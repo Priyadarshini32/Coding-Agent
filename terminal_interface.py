@@ -39,22 +39,33 @@ class TerminalInterface:
         self.console.print(Text(f"[italic grey]Agent thinking: {thought}[/italic grey]"))
 
     def display_tool_call(self, tool_call_json):
-        self.console.print(Panel(Text(f"Agent Decided to Call Tool:\n{json.dumps(tool_call_json, indent=2)}", style="magenta"), title="Agent Action"))
+        tool_name = tool_call_json.get('function', {}).get('name', 'unknown_tool')
+        tool_args = tool_call_json.get('function', {}).get('arguments', {})
+        
+        tool_text = Text()
+        tool_text.append(f"Agent Calling Tool: ", style="bold magenta")
+        tool_text.append(f"{tool_name}\n", style="magenta")
+        
+        if tool_args:
+            tool_text.append("Arguments:\n", style="bold magenta")
+            tool_text.append(json.dumps(tool_args, indent=2), style="dim magenta")
+        
+        self.console.print(Panel(tool_text, title="Agent Action"))
 
     def display_tool_output(self, output):
+        tool_name = output.get('tool_name', 'unknown_tool')
         if isinstance(output, dict) and output.get("status") == "success":
             content_to_display = output.get('content', '')
             if content_to_display:
-                self.console.print(Panel(Text(f"Tool Execution Successful!\nContent:\n{content_to_display}", style="green"), title="Tool Output"))
+                self.console.print(Panel(Text(f"Tool Execution Successful! [{tool_name}]\nContent:\n{content_to_display}", style="green"), title="Tool Output"))
             else:
-                self.console.print(Panel(Text("Tool Execution Successful!", style="green"), title="Tool Output"))
+                self.console.print(Panel(Text(f"Tool Execution Successful! [{tool_name}]", style="green"), title="Tool Output"))
         elif isinstance(output, dict) and output.get("status") == "error":
-            self.console.print(Panel(Text(f"Error: {output['message']}", style="bold red"), title="Tool Output"))
+            self.console.print(Panel(Text(f"Error in [{tool_name}]: {output['message']}", style="bold red"), title="Tool Output"))
         else:
-            self.console.print(Panel(Text(f"Tool Output: {output}", style="cyan"), title="Tool Output"))
+            self.console.print(Panel(Text(f"Tool Output [{tool_name}]: {output}", style="cyan"), title="Tool Output"))
 
     def confirm_action(self, action_description, preview_content=None, language=None):
-        self.console.print(Panel(Text(action_description, style="bold yellow"), title="Action Confirmation"))
         
         if preview_content:
             self.console.print(Panel(Text("Preview of change:", style="italic blue"), title="Preview"))
@@ -64,7 +75,7 @@ class TerminalInterface:
             else:
                 self.console.print(Panel(Text(preview_content), title="Content Preview"))
         
-        response = self.console.input("[bold magenta]Do you approve this action? (yes/no)[/bold magenta] ").lower()
+        response = self.console.input("[bold magenta]Do you approve this action? (yes/no)[/bold magenta] ").lower().strip()
         return response == 'yes'
     
     def display_status(self, status_data):
