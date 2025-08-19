@@ -26,6 +26,17 @@ def read_file(filepath):
             content = f.read()
         return {"status": "success", "content": content}
     except FileNotFoundError:
+        # Try resolving common Python extension if missing
+        base, ext = os.path.splitext(filepath)
+        if ext == "":
+            candidate = f"{filepath}.py"
+            if os.path.exists(candidate):
+                try:
+                    with open(candidate, 'r') as f:
+                        content = f.read()
+                    return {"status": "success", "content": content}
+                except Exception as e:
+                    return {"status": "error", "message": str(e)}
         return {"status": "error", "message": f"File not found: {filepath}"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
