@@ -428,7 +428,7 @@
     "content_hashes": []
   },
   "sample.py": {
-    "access_count": 16,
+    "access_count": 17,
     "operations": [
       {
         "timestamp": "2025-08-17T16:10:36.141091",
@@ -541,9 +541,16 @@
         "success": true,
         "content_hash": "4666bc8b137d26219aabcb0fa31c15df",
         "file_size": 329
+      },
+      {
+        "timestamp": "2025-08-18T11:14:33.170798",
+        "operation": "delete_file",
+        "success": true,
+        "content_hash": null,
+        "file_size": null
       }
     ],
-    "last_accessed": "2025-08-17T17:48:28.935800",
+    "last_accessed": "2025-08-18T11:14:33.170798",
     "file_type": ".py",
     "content_hashes": [
       "1e6f93b02bd6ca9c1a2468ce363fcd58",

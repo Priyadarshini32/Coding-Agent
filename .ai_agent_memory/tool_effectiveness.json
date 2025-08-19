@@ -557,10 +557,10 @@
     "last_used": "2025-08-17T16:11:41.852289"
   },
   "delete_file": {
-    "total_uses": 6,
-    "successful_uses": 6,
+    "total_uses": 8,
+    "successful_uses": 8,
     "failed_uses": 0,
-    "avg_execution_time": 0.002272446950276693,
+    "avg_execution_time": 0.0026871562004089355,
     "common_errors": {},
     "usage_contexts": [
       {
@@ -586,15 +586,23 @@
             "filepath": "sample.py"
           }
         }
+      },
+      {
+        "timestamp": "2025-08-18T11:14:33.167410",
+        "context": {
+          "arguments": {
+            "filepath": "sample.py"
+          }
+        }
       }
     ],
-    "last_used": "2025-08-17T17:15:44.621115"
+    "last_used": "2025-08-18T11:14:33.174944"
   },
   "undo_last_action": {
-    "total_uses": 4,
-    "successful_uses": 4,
+    "total_uses": 6,
+    "successful_uses": 6,
     "failed_uses": 0,
-    "avg_execution_time": 0.0016063451766967773,
+    "avg_execution_time": 0.0014069875081380208,
     "common_errors": {},
     "usage_contexts": [
       {
@@ -608,9 +616,15 @@
         "context": {
           "arguments": {}
         }
+      },
+      {
+        "timestamp": "2025-08-18T11:14:43.992435",
+        "context": {
+          "arguments": {}
+        }
       }
     ],
-    "last_used": "2025-08-17T16:28:19.104100"
+    "last_used": "2025-08-18T11:14:43.998173"
   },
   "run_git_command": {
     "total_uses": 4,

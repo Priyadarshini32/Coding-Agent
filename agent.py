@@ -74,20 +74,31 @@ class Agent:
         tool_calls = []
         processed_action = action.strip()
         
-        # Clean JSON formatting
-        if processed_action.startswith('```json') and processed_action.endswith('```'):
-            processed_action = processed_action[len('```json'):-len('```')].strip()
+        # Clean JSON formatting - handle both ```json and ``` formats
+        if processed_action.startswith('```json'):
+            processed_action = processed_action[len('```json'):].strip()
+            if processed_action.endswith('```'):
+                processed_action = processed_action[:-len('```')].strip()
+        elif processed_action.startswith('```'):
+            processed_action = processed_action[len('```'):].strip()
+            if processed_action.endswith('```'):
+                processed_action = processed_action[:-len('```')].strip()
 
         try:
             response_json = json.loads(processed_action)
             
-            if "tool_calls" in response_json:
+            if "tool_calls" in response_json and response_json["tool_calls"]:
                 tool_calls = response_json["tool_calls"]
             elif "text" in response_json:
                 agent_response_content = response_json['text']
                 self.terminal_interface.display_message(agent_response_content)
                 self.conversation_history.append({"role": "model", "content": agent_response_content})
                 return {"status": "success", "message": agent_response_content, "type": "text_response"}
+            else:
+                # Handle case where JSON is valid but doesn't have expected structure
+                self.terminal_interface.display_message(processed_action)
+                self.conversation_history.append({"role": "model", "content": processed_action})
+                return {"status": "success", "message": processed_action, "type": "text_response"}
 
         except json.JSONDecodeError:
             # Treat as text response
