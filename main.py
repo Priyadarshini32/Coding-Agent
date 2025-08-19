@@ -39,9 +39,9 @@ def main():
 - Answer general coding and project-related questions.
 
 You can also use these special commands:
-- **help**: Show the list of available functions and capabilities.
-- **status**: Get a summary of the agent's current memory and task state.
-- **history**: View the full conversation history.
+- **--help**: Show the list of available functions and capabilities.
+- **--status**: Get a summary of the agent's current memory and task state.
+- **--history**: View the full conversation history.
 - **undo**: Undo the last destructive action performed by the agent.""", title="What I can do:")
 
     while True:
@@ -49,7 +49,7 @@ You can also use these special commands:
         if user_input.lower() == 'exit':
             terminal_interface.display_message("Exiting agent. Goodbye!")
             break
-        elif user_input.lower() == 'help':
+        elif user_input.lower() == '--help':
             tool_schemas = agent.get_tool_schemas()
             help_message = "# Agent Capabilities & Functions\n\n"
             for tool in tool_schemas:
@@ -73,11 +73,11 @@ You can also use these special commands:
                 help_message += "\n"
             terminal_interface.display_message(help_message, title="Help & Capabilities")
             continue
-        elif user_input.lower() == 'status':
+        elif user_input.lower() == '--status':
             agent_status = agent.get_status()
             terminal_interface.display_status(agent_status)
             continue
-        elif user_input.lower() == 'history':
+        elif user_input.lower() == '--history':
             history = agent.get_conversation_history()
             terminal_interface.display_history(history)
             continue

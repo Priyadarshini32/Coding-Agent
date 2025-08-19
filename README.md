@@ -1,4 +1,4 @@
-# My Python Project
+# Lumina - AI CODING AGENT
 
 This project implements an AI coding agent that interacts with the user through a terminal interface.  The agent uses the Gemini-1.5-flash model from Google's Generative AI API to understand and respond to user requests.  It can perform a variety of actions, including reading, writing, deleting, and modifying files; executing Git commands; running shell commands; linting and testing Python code; and answering coding-related questions.
 

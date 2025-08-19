@@ -110,32 +110,36 @@ class Agent:
             # Execute only the first tool call (iterative approach)
             tool_call = tool_calls[0]
             
-            self.terminal_interface.display_tool_call(tool_call)
-            self.conversation_history.append({"role": "model", "content": f"TOOL_CALL: {json.dumps(tool_call)}"})
-
             function_name = tool_call["function"]["name"]
             tool_args = tool_call["function"]["arguments"]
             
             # Handle approval for destructive actions
-            if function_name in ["write_file", "delete_file", "clear_file_content", "apply_code_change"]:
-                action_description = f"The agent wants to execute '{function_name}' on '{tool_args.get('filepath', '')}'."
+            if function_name in ["write_file", "delete_file", "clear_file_content", "apply_code_change", "edit_file", "edit_notebook", "run_terminal_cmd"]:
+                action_description = f"The agent wants to execute '{function_name}' on '{tool_args.get('filepath', '') or tool_args.get('target_file', '')}'. Args: {tool_args}"
                 preview_content = None
                 language = None
 
                 if function_name == "write_file":
                     preview_content = tool_args.get('content', '')
                     language = "text"
-                elif function_name == "apply_code_change":
-                    old_code = tool_args.get('old_code', '')
-                    new_code = tool_args.get('new_code', '')
-                    preview_content = f"--- Old Code ---\n{old_code}\n+++ New Code +++\n{new_code}"
+                elif function_name == "edit_file":
+                    preview_content = f"--- Instructions ---\n{tool_args.get('instructions', '')}\n--- Code Edit ---\n{tool_args.get('code_edit', '')}"
                     language = "diff"
+                elif function_name == "edit_notebook":
+                    preview_content = f"--- Old String ---\n{tool_args.get('old_string', '')}\n--- New String ---\n{tool_args.get('new_string', '')}"
+                    language = tool_args.get('cell_language', 'text')
+                elif function_name == "run_terminal_cmd":
+                    preview_content = tool_args.get('command', '')
+                    language = "bash"
 
                 if not self.terminal_interface.confirm_action(action_description, preview_content, language):
                     self.terminal_interface.display_message("Action cancelled by user.", style="red")
                     self.conversation_history.append({"role": "user_action", "content": "User denied the action."})
                     return {"status": "cancelled", "message": "Action cancelled by user.", "type": "cancelled"}
-
+            else: # For non-destructive tools, display the tool call
+                self.terminal_interface.display_tool_call(tool_call)
+                self.conversation_history.append({"role": "model", "content": f"TOOL_CALL: {json.dumps(tool_call)}"})
+            
             # Execute the tool
             if function_name in self.tool_execution_system.available_tools:
                 start_time = time.time()
@@ -235,13 +239,6 @@ class Agent:
                 return observation
             
             elif observation and observation.get("status") == "error":
-                # Handle errors by attempting to provide helpful feedback
-                if "not found" in observation.get("message", "").lower():
-                    self.terminal_interface.display_message(
-                        "File not found. Consider using 'list_directory_contents' to verify the path.", 
-                        style="yellow"
-                    )
-                
                 # Continue iteration to let LLM handle the error
                 perception = self.perceive(None, observation)
                 continue
